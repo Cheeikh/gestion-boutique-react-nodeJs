@@ -52,7 +52,7 @@ const CourseList: React.FC = () => {
   const [filterValues, setFilterValues] = React.useState<FilterValues>({});
   const [selectedCourseId, setSelectedCourseId] = React.useState<string | null>(null);
 
-  const { isLoading: navigationLoading } = useNavigation();
+  const  navigationLoading  = useNavigation();
 
   const handleFilter = (values: FilterValues) => {
     setFilterValues(values);
