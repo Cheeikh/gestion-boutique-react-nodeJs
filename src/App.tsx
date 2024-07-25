@@ -1,49 +1,65 @@
-import { GitHubBanner, Refine, WelcomePage } from "@refinedev/core";
-import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
-import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
+// src/App.tsx
+import React from 'react';
+import { Refine } from '@refinedev/core';
+import routerBindings, { NavigateToResource } from "@refinedev/react-router-v6";
+import dataProvider from "@refinedev/simple-rest";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import CourseList from './components/CourseList';
+import StudentDashboard from './components/StudentDashboard'; // Composant pour l'étudiant
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Login from './components/Login';
+import ProtectedRoute from './components/ProtectedRoute';
+import { authProvider } from './authProvider';
 
-import dataProvider, { GraphQLClient } from "@refinedev/graphql";
-import routerBindings, {
-  DocumentTitleHandler,
-  UnsavedChangesNotifier,
-} from "@refinedev/react-router-v6";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import "./App.css";
-import { authProvider } from "./authProvider";
-const API_URL = "https://your-graphql-url/graphql";
-
-const client = new GraphQLClient(API_URL);
-const gqlDataProvider = dataProvider(client);
-
-function App() {
+const App: React.FC = () => {
   return (
     <BrowserRouter>
-      <GitHubBanner />
-      <RefineKbarProvider>
-        <DevtoolsProvider>
-          <Refine
-            dataProvider={gqlDataProvider}
-            routerProvider={routerBindings}
-            authProvider={authProvider}
-            options={{
-              syncWithLocation: true,
-              warnWhenUnsavedChanges: true,
-              useNewQueryKeys: true,
-              projectId: "oCjyB2-7uvt1j-ic48hA",
-            }}
-          >
-            <Routes>
-              <Route index element={<WelcomePage />} />
-            </Routes>
-            <RefineKbar />
-            <UnsavedChangesNotifier />
-            <DocumentTitleHandler />
-          </Refine>
-          <DevtoolsPanel />
-        </DevtoolsProvider>
-      </RefineKbarProvider>
+      <Refine
+        dataProvider={dataProvider("http://localhost:3000/api")}
+        routerProvider={routerBindings}
+        authProvider={authProvider}
+        resources={[
+          {
+            name: "courses",
+            list: "/courses",
+          },
+          // Ajoutez ici d'autres ressources nécessaires
+        ]}
+      >
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/courses"
+            element={
+              <ProtectedRoute>
+                <CourseList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/student/dashboard" // Route pour l'interface étudiant
+            element={
+              <ProtectedRoute>
+                <StudentDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <NavigateToResource resource="courses" />
+              </ProtectedRoute>
+            }
+          />
+          {/* Redirect all other routes to login */}
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+        <ToastContainer />
+      </Refine>
     </BrowserRouter>
   );
-}
+};
 
 export default App;
