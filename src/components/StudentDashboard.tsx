@@ -73,7 +73,7 @@ const StudentDashboard: React.FC = () => {
     }
   };
 
-  
+
   const handleFilterChange = (values: { period?: string; module?: string }) => {
     setFilterValues(values);
   };
@@ -135,8 +135,7 @@ const StudentDashboard: React.FC = () => {
 
         {selectedCourseIds.length > 0 && (
           <StudentSessionCalendar
-            courseIds={selectedCourseIds}
-            studentId={studentId!}
+            courseId={selectedCourseIds[0]}
             filterValues={filterValues}
           />
         )}

@@ -42,7 +42,7 @@ const StudentSessionCalendar: React.FC<{ courseId: string; filterValues: FilterV
     resource: 'sessions',
     filters: [
       { field: 'course_id', operator: 'eq', value: courseId },
-      ...(filterValues.module ? [{ field: 'module', operator: 'eq', value: filterValues.module }] : []),
+      ...(filterValues.module ? [{ field: 'module', operator: 'eq' as const, value: filterValues.module }] : []),
     ],
   });
 

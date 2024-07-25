@@ -1,14 +1,20 @@
-import type { AuthProvider } from "@refinedev/core";
+import type { AuthProvider, AuthActionResponse, OnErrorResponse } from "@refinedev/core";
 
 export const TOKEN_KEY = "refine-auth";
 
 export const authProvider: AuthProvider = {
-  login: async ({ username, password }: { username: string; password: string }) => {
+  login: async ({
+    username,
+    password,
+  }: {
+    username: string;
+    password: string;
+  }): Promise<AuthActionResponse> => {
     try {
-      const response = await fetch('http://localhost:3000/api/login', {
-        method: 'POST',
+      const response = await fetch("http://localhost:3000/api/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ username, password }),
       });
@@ -20,7 +26,7 @@ export const authProvider: AuthProvider = {
       }
 
       // Stockez l'ID de l'utilisateur dans le localStorage
-      localStorage.setItem('studentId', data.user.studentId); // Assurez-vous que l'ID est renvoyé
+      localStorage.setItem("studentId", data.user.studentId);
 
       return {
         success: true,
@@ -29,14 +35,14 @@ export const authProvider: AuthProvider = {
     } catch (error) {
       return {
         success: false,
-        error: error.message,
+        error: error instanceof Error ? error : new Error(String(error)),
       };
     }
   },
 
   logout: async () => {
     localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem('studentId');
+    localStorage.removeItem("studentId");
     return {
       success: true,
       redirectTo: "/login",
@@ -45,7 +51,7 @@ export const authProvider: AuthProvider = {
 
   check: async () => {
     const token = localStorage.getItem(TOKEN_KEY);
-    const studentId = localStorage.getItem('studentId');
+    const studentId = localStorage.getItem("studentId");
     if (token && studentId) {
       return {
         authenticated: true,
@@ -81,8 +87,8 @@ export const authProvider: AuthProvider = {
     return null;
   },
 
-  onError: async (error) => {
+  onError: async (error: any): Promise<OnErrorResponse> => {
     console.error("Auth provider error:", error);
-    return { error };
+    return { error: error instanceof Error ? error : new Error(String(error)) };
   },
 };

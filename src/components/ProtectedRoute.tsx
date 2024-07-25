@@ -28,7 +28,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, roles }) => {
       try {
         const { authenticated } = await authProvider.check();
         if (authenticated) {
-          const user = await authProvider.getIdentity();
+          const user = await authProvider.getIdentity?.();
           setAuthState({
             isAuthenticated: true,
             userRole: (user as User)?.role || null,
