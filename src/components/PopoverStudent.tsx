@@ -34,7 +34,7 @@ const PopoverStudent: React.FC<PopoverProps> = ({ session, studentId, onClose })
       } else {
         toast.error(response.data.error || 'Erreur lors du marquage de présence.');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erreur lors du marquage de présence:', error);
       toast.error(error.response?.data?.error || 'Erreur lors du marquage de présence.');
     }
@@ -63,7 +63,7 @@ const PopoverStudent: React.FC<PopoverProps> = ({ session, studentId, onClose })
       } else {
         toast.error(response.data.error || 'Erreur lors de la justification de l\'absence.');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erreur lors de la justification de l\'absence:', error);
       toast.error(error.response?.data?.error || 'Erreur lors de la justification de l\'absence.');
     }

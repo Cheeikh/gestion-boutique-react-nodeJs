@@ -5,7 +5,7 @@ import { authProvider } from "../authProvider";
 const Login: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string>("");
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -15,7 +15,7 @@ const Login: React.FC = () => {
     if (response.success) {
       navigate(response.redirectTo || "/");
     } else {
-      setError(response.error || "Échec de la connexion");
+      setError(response.error?.toString() || "Échec de la connexion");
     }
   };
 

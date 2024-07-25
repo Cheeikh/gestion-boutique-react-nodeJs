@@ -37,7 +37,7 @@ const AbsenceList: React.FC<{ studentId: number | null }> = ({ studentId }) => {
       try {
         await axios.post('/api/absences/justify', { absenceId, justification: reason });
         alert('Absence justifiée avec succès!');
-        fetchAbsences(studentId); // Rafraîchir la liste des absences
+        fetchAbsences(studentId as number); // Rafraîchir la liste des absences
       } catch (error) {
         console.error("Error justifying absence:", error);
         alert('Erreur lors de la justification de l\'absence.');

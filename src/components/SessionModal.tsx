@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Session } from '../types'; // Assurez-vous d'avoir un fichier de types
+
+interface Session {
+  id?: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  status: 'scheduled' | 'completed' | 'cancelled';
+}
 
 interface SessionModalProps {
   isOpen: boolean;

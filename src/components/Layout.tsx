@@ -8,7 +8,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleLogout = async () => {
-    const response = await authProvider.logout();
+    const response = await authProvider.logout({});
     if (response.success) {
       navigate(response.redirectTo || '/login');
     }

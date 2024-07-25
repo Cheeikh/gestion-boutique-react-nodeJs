@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTable } from '@refinedev/react-table';
 import { ColumnDef } from '@tanstack/react-table';
+import { useNavigation } from "@refinedev/core";
 import Filters from './Filters';
 import SessionCalendar from './SessionCalendar';
 import Layout from './Layout';
@@ -51,6 +52,8 @@ const CourseList: React.FC = () => {
   const [filterValues, setFilterValues] = React.useState<FilterValues>({});
   const [selectedCourseId, setSelectedCourseId] = React.useState<string | null>(null);
 
+  const { isLoading: navigationLoading } = useNavigation();
+
   const handleFilter = (values: FilterValues) => {
     setFilterValues(values);
     setPageIndex(0);
@@ -60,13 +63,11 @@ const CourseList: React.FC = () => {
     getHeaderGroups,
     getRowModel,
     setPageIndex,
-    getState,
     getCanPreviousPage,
-    getPageCount,
     getCanNextPage,
     nextPage,
     previousPage,
-    refineCore: { isLoading, isError },
+    refineCore: { tableQueryResult },
   } = useTable({
     columns,
     refineCoreProps: {
@@ -97,11 +98,11 @@ const CourseList: React.FC = () => {
     },
   });
 
-  if (isLoading) {
+  if (navigationLoading || tableQueryResult.isLoading) {
     return <div>Chargement...</div>;
   }
 
-  if (isError) {
+  if (tableQueryResult.isError) {
     return <div>Erreur lors du chargement des cours</div>;
   }
 
