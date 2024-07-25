@@ -1,4 +1,3 @@
-// src/components/ProtectedRoute.tsx
 import React, { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { authProvider } from "../authProvider";
@@ -6,6 +5,12 @@ import { authProvider } from "../authProvider";
 interface ProtectedRouteProps {
   children: React.ReactNode;
   roles?: string[];
+}
+
+// Définissez une interface pour l'objet utilisateur
+interface User {
+  role?: string;
+  // Ajoutez d'autres propriétés si nécessaire
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, roles }) => {
@@ -26,7 +31,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, roles }) => {
           const user = await authProvider.getIdentity();
           setAuthState({
             isAuthenticated: true,
-            userRole: user?.role || null,
+            userRole: (user as User)?.role || null,
           });
         } else {
           setAuthState({
@@ -53,7 +58,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, roles }) => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (roles && !roles.includes(authState.userRole as string)) {
+  if (roles && authState.userRole && !roles.includes(authState.userRole)) {
     // Redirect to an appropriate page if the user doesn't have the required role
     return <Navigate to="/unauthorized" replace />;
   }
