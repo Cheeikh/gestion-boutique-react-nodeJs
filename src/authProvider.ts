@@ -1,8 +1,8 @@
-import type { AuthProvider } from "@refinedev/core";
+import { AuthBindings } from "@refinedev/core";
 
 export const TOKEN_KEY = "refine-auth";
 
-export const authProvider: AuthProvider = {
+export const authProvider: AuthBindings = {
   login: async ({ username, password }: { username: string; password: string }) => {
     try {
       const response = await fetch('http://localhost:3000/api/login', {
@@ -16,11 +16,14 @@ export const authProvider: AuthProvider = {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error);
+        return {
+          success: false,
+          error: new Error(data.error),
+        };
       }
 
-      // Stockez l'ID de l'utilisateur dans le localStorage
       localStorage.setItem('studentId', data.user.studentId);
+      localStorage.setItem(TOKEN_KEY, JSON.stringify(data.user));
 
       return {
         success: true,
@@ -29,7 +32,7 @@ export const authProvider: AuthProvider = {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error : new Error('An unknown error occurred'),
       };
     }
   },
@@ -54,6 +57,8 @@ export const authProvider: AuthProvider = {
 
     return {
       authenticated: false,
+      error: new Error("Not authenticated"),
+      logout: true,
       redirectTo: "/login",
     };
   },
@@ -81,8 +86,8 @@ export const authProvider: AuthProvider = {
     return null;
   },
 
-  onError: async (error: unknown) => {
+  onError: async (error) => {
     console.error("Auth provider error:", error);
-    return { error: error instanceof Error ? error.message : String(error) };
+    return { error };
   },
 };

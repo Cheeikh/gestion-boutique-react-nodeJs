@@ -25,9 +25,9 @@ const StudentAbsenceList: React.FC<{ studentId: number | null }> = ({ studentId 
     }
   }, [studentId]);
 
-  const fetchAbsences = async (studentId: number) => {
+  const fetchAbsences = async (id: number) => {
     try {
-      const response = await axios.get(`/api/absences?student_id=${studentId}`);
+      const response = await axios.get(`/api/absences?student_id=${id}`);
       setAbsences(response.data);
     } catch (error) {
       console.error("Error fetching absences:", error);
@@ -38,10 +38,10 @@ const StudentAbsenceList: React.FC<{ studentId: number | null }> = ({ studentId 
 
   const justifyAbsence = async (absenceId: number, sessionId: number, date: string) => {
     const justification = prompt("Veuillez entrer un motif de justification:");
-    if (justification) {
+    if (justification && studentId !== null) {
       try {
         await axios.put(`/api/justify-absence/${absenceId}`, { justification });
-        fetchAbsences(studentId!); // Refresh absences after justification
+        fetchAbsences(studentId);
       } catch (error) {
         console.error("Error justifying absence:", error);
       }
