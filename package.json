@@ -51,9 +51,10 @@
   "scripts": {
     "dev": "refine dev",
     "build": "tsc && refine build",
-    "start": "refine start",
+    "start": "refine start && node server.js",
     "refine": "refine",
-    "init-db": "node initDB.js"
+    "init-db": "node initDB.js",
+    "server": "node server.js"
   },
   "browserslist": {
     "production": [
